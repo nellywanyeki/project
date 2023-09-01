@@ -1,0 +1,173 @@
+package Javaconn;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Javaconn extends javax.swing.JFrame {
+    private static final String DB_URL = "jdbc:mysql://localhost:3308/leavesystem";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "";
+
+    private JFrame frame;
+    private JTextField firstNameField;
+    private JTextField lastNameField;
+    private JTextField telephoneField;
+    private JTextField employeeIdField;
+    private JTextArea leaveRequestTextArea;
+    private JComboBox<String> statusComboBox;
+
+    public Javaconn() {
+        frame = new JFrame("Leave Application System");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+
+        JPanel panel = new JPanel();
+        frame.add(panel);
+
+        JLabel firstNameLabel = new JLabel("First Name:");
+        firstNameField = new JTextField(20);
+        JLabel lastNameLabel = new JLabel("Last Name:");
+        lastNameField = new JTextField(20);
+        JLabel telephoneLabel = new JLabel("Telephone:");
+        telephoneField = new JTextField(20);
+        JLabel employeeIdLabel = new JLabel("Employee ID:");
+        employeeIdField = new JTextField(20);
+        JLabel leaveRequestLabel = new JLabel("Leave Request:");
+        leaveRequestTextArea = new JTextArea(5, 20);
+        JLabel statusLabel = new JLabel("Status:");
+        statusComboBox = new JComboBox<>(new String[]{"Pending", "Approved", "Denied"});
+
+        JButton submitButton = new JButton("Submit");
+        JButton deleteButton = new JButton("Delete");
+        JButton updateButton = new JButton("Update");
+
+        panel.setLayout(new GridLayout(8, 2));
+
+        panel.add(firstNameLabel);
+        panel.add(firstNameField);
+        panel.add(lastNameLabel);
+        panel.add(lastNameField);
+        panel.add(telephoneLabel);
+        panel.add(telephoneField);
+        panel.add(employeeIdLabel);
+        panel.add(employeeIdField);
+        panel.add(leaveRequestLabel);
+        panel.add(new JScrollPane(leaveRequestTextArea));
+        panel.add(statusLabel);
+        panel.add(statusComboBox);
+        panel.add(new JLabel()); // Empty label for spacing
+        panel.add(submitButton);
+        panel.add(deleteButton);
+        panel.add(updateButton);
+
+        submitButton.addActionListener(new ActionListener() {
+           
+            public void actionPerformed(ActionEvent e) {
+                insertLeaveRequest();
+            }
+        });
+
+        deleteButton.addActionListener(new ActionListener() {
+            
+            public void actionPerformed(ActionEvent e) {
+                deleteLeaveRequest();
+            }
+        });
+
+        updateButton.addActionListener(new ActionListener() {
+            
+            public void actionPerformed(ActionEvent e) {
+                updateLeaveRequest();
+            }
+        });
+
+        frame.setVisible(true);
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    }
+
+    private void insertLeaveRequest() {
+        try (Connection conn = getConnection()) {
+            String sql = "INSERT INTO leave_requests (first_name, last_name, telephone, employee_id, leave_request, status, request_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, firstNameField.getText());
+            statement.setString(2, lastNameField.getText());
+            statement.setString(3, telephoneField.getText());
+            statement.setInt(4, Integer.parseInt(employeeIdField.getText()));
+            statement.setString(5, leaveRequestTextArea.getText());
+            statement.setString(6, statusComboBox.getSelectedItem().toString());
+            
+            // Get the current date
+            Date currentDate = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            statement.setString(7, dateFormat.format(currentDate));
+            
+            statement.executeUpdate();
+            JOptionPane.showMessageDialog(frame, "Leave request submitted successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteLeaveRequest() {
+        // Implement the delete operation here
+    }
+
+    private void updateLeaveRequest() {
+        // Implement the update operation here
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            
+            public void run() {
+                new Javaconn();
+            }
+        });
+    }
+}
+
+
+
+
+    /**
+ 
+    public Javaconn() {
+        initComponents();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    private void initComponents() {
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>                        
+
+
+    // Variables declaration - do not modify                     
+    // End of variables declaration                   
+}

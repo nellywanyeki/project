@@ -1,0 +1,40 @@
+CREATE TABLE Employees (
+    employee_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100),
+    -- other employee-related fields
+);
+
+-- Table to store leave requests
+CREATE TABLE LeaveRequests (
+    request_id INT PRIMARY KEY,
+    employee_id INT,
+    request_date DATE,
+    start_date DATE,
+    end_date DATE,
+    status ENUM('Pending', 'Approved', 'Disapproved'),
+    reason TEXT,
+    FOREIGN KEY (employee_id) REFERENCES Employees(employee_id)
+);
+
+-- Table to store employer information
+CREATE TABLE Employers (
+    employer_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100),
+    -- other employer-related fields
+);
+
+-- Table to track approvals/disapprovals
+CREATE TABLE ApprovalLog (
+    log_id INT PRIMARY KEY,
+    request_id INT,
+    employer_id INT,
+    approval_date DATETIME,
+    status ENUM('Approved', 'Disapproved'),
+    comments TEXT,
+    FOREIGN KEY (request_id) REFERENCES LeaveRequests(request_id),
+    FOREIGN KEY (employer_id) REFERENCES Employers(employer_id)
+);
